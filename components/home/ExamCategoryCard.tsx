@@ -1,15 +1,22 @@
 import Link from "next/link";
 
+import { EligibilityBadge } from "@/components/eligibility/EligibilityBadge";
 import type { CategoryConfig } from "@/lib/categories";
 import { COVERAGE_MODE_LABELS } from "@/lib/constants";
 import { cn } from "@/lib/cn";
+import type { EligibilityStatus } from "@/lib/eligibility/types";
 
 interface ExamCategoryCardProps {
   config: CategoryConfig;
   animationDelayMs: number;
+  eligibilityStatus?: EligibilityStatus | null;
 }
 
-export function ExamCategoryCard({ config, animationDelayMs }: ExamCategoryCardProps) {
+export function ExamCategoryCard({
+  config,
+  animationDelayMs,
+  eligibilityStatus,
+}: ExamCategoryCardProps) {
   const visibleReferences = config.officialReferences.slice(0, 2);
   const hiddenCount = Math.max(0, config.officialReferences.length - visibleReferences.length);
 
@@ -27,9 +34,14 @@ export function ExamCategoryCard({ config, animationDelayMs }: ExamCategoryCardP
         <span className="rounded-full border border-hero-mid/20 bg-hero-deep px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
           {config.shortName}
         </span>
-        <span className="text-xs font-medium uppercase tracking-[0.24em] text-muted">
-          {COVERAGE_MODE_LABELS[config.coverageMode]}
-        </span>
+        <div className="flex flex-col items-end gap-1.5">
+          {eligibilityStatus ? (
+            <EligibilityBadge status={eligibilityStatus} compact />
+          ) : null}
+          <span className="text-xs font-medium uppercase tracking-[0.24em] text-muted">
+            {COVERAGE_MODE_LABELS[config.coverageMode]}
+          </span>
+        </div>
       </div>
 
       <h3 className="font-serif-ui text-2xl font-semibold leading-tight text-ink">

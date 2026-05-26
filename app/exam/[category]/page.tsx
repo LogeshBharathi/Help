@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-import { NoticeBoard } from "@/components/exam/NoticeBoard";
+import { ExamCategoryShell } from "@/components/exam/ExamCategoryShell";
+import { NoticeSkeletonList } from "@/components/exam/NoticeSkeleton";
 import { CATEGORY_CONFIG, isExamCategory } from "@/lib/categories";
 import { EXAM_CATEGORIES } from "@/lib/constants";
 
@@ -31,8 +33,15 @@ export default function ExamCategoryPage({ params }: ExamPageProps) {
   const config = CATEGORY_CONFIG[params.category];
 
   return (
-    <div className="space-y-8">
-      <NoticeBoard category={config.shortName} />
-    </div>
+    <Suspense
+      fallback={
+        <div className="space-y-8">
+          <div className="h-12 animate-pulse rounded-full bg-surface" />
+          <NoticeSkeletonList />
+        </div>
+      }
+    >
+      <ExamCategoryShell category={config.shortName} />
+    </Suspense>
   );
 }

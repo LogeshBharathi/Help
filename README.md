@@ -79,6 +79,15 @@ See [`lib/db/schema.sql`](lib/db/schema.sql). Core tables:
 - **SQLite** works on Node runtimes (local dev, VPS, container). For serverless Vercel without a volume, point `DATABASE_PATH` to a persistent store (e.g. Turso/libSQL) or replace `lib/db` with your hosted database.
 - Set `SSC_SYNC_ENABLED=true` only when your SSC integration credentials/network are configured.
 
+## Eligibility checker (CGL 2026 / May update)
+
+- **`/eligibility`** — Save profile (localStorage), view all-exam results, browse full guide tabs (CGL, comparison, age relaxation, physical).
+- **Homepage** — Orange eligibility card + header link with check icon.
+- **Exam tabs** — `Official notices` | `Eligibility` on each `/exam/[category]` page (`?view=eligibility` deep link).
+- **Badges** — Category cards and notice feed show **Eligible / Not eligible / Review** when a profile exists.
+
+Profile key: `ssc-eligibility-profile.v1`. Rules live in `lib/eligibility/` (inferred from your HTML guide + CGL 2026 notice). Not legal advice — verify on ssc.gov.in.
+
 ## Assumptions documented in code
 
 Parts of the backend pipeline (PDF text extraction, auto-summary generation, SSC auth) are **mocked or stubbed** where the original server source was unavailable. Search for `Assumption` and `Inferred` comments in `lib/ssc/` and `lib/db/`.

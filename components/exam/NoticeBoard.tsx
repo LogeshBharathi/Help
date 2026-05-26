@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import { EligibilityBadge } from "@/components/eligibility/EligibilityBadge";
 import { ExamCoverageModal } from "@/components/ExamCoverageModal";
+import { evaluateCategory } from "@/lib/eligibility/evaluate";
+import { useEligibilityProfile } from "@/lib/hooks/useEligibilityProfile";
 import { NoticeCard } from "@/components/exam/NoticeCard";
 import { NoticeContentModal } from "@/components/exam/NoticeContentModal";
 import { NoticeSkeletonList } from "@/components/exam/NoticeSkeleton";
@@ -50,6 +53,8 @@ export function NoticeBoard({ category }: NoticeBoardProps) {
   const [tagNotice, setTagNotice] = useState<NoticeRecord | null>(null);
 
   const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { profile, hasProfile } = useEligibilityProfile();
+  const eligibility = evaluateCategory(profile, category);
 
   const deferredSearch = useDeferredValue(searchInput);
   const debouncedFilters = useDebouncedValue(
@@ -116,6 +121,23 @@ export function NoticeBoard({ category }: NoticeBoardProps) {
 
   return (
     <>
+      {hasProfile ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.2rem] border border-line bg-surface px-4 py-3 shadow-panel">
+          <p className="text-sm text-muted">
+            <span className="font-semibold text-ink">Your eligibility:</span> {eligibility.summary}
+          </p>
+          <div className="flex items-center gap-3">
+            <EligibilityBadge status={eligibility.status} />
+            <Link
+              href={`/exam/${category}?view=eligibility`}
+              className="text-xs font-semibold text-accent hover:text-accent-strong"
+            >
+              Full details
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
       <section className="relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-br from-hero-deep via-hero-mid to-[#31597d] px-6 py-8 text-white shadow-[0_30px_80px_rgba(9,26,48,0.24)] md:px-8">
         <div className="absolute -left-16 top-0 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
         <div className="absolute bottom-0 right-0 h-52 w-52 rounded-full bg-accent/20 blur-3xl" />
